@@ -18,29 +18,87 @@
                 android:layout_width="300dp"
                 android:layout_height="300dp"
                 android:padding="15dp"
-                app:progress="90"
+                app:progress="260"
+                app:max="360"
                 app:primaryCapSize="30dp"
                 app:strokeWidth="30dp"
-                app:secondaryCapSize="30dp"
+                app:shadowCapSize="30dp"
+                app:progressColor="#D1D1D1"
                 app:backgroundColor="#00000000"
-                app:progressColor="#E4AB36"
-                app:secondaryProgressColor="#00f"
                 app:primaryCapVisibility="true"
-                app:secondaryCapVisibility="true"/>
+                app:shadowCapVisibility="false"/>
 
         <com.mofeejegi.prpgressfancybar.RoundedProgress
                 android:layout_width="300dp"
                 android:layout_height="300dp"
                 android:padding="15dp"
-                app:progress="80"
+                app:progress="240"
+                app:max="360"
                 app:primaryCapSize="30dp"
                 app:strokeWidth="30dp"
-                app:secondaryCapSize="30dp"
+                app:shadowCapSize="30dp"
+                app:backgroundColor="#00000000"
+                app:progressColor="#12443F"
+                app:primaryCapVisibility="true"
+                app:shadowCapVisibility="true"/>
+
+        <com.mofeejegi.prpgressfancybar.RoundedProgress
+                android:layout_width="300dp"
+                android:layout_height="300dp"
+                android:padding="15dp"
+                app:progress="216"
+                app:max="360"
+                app:primaryCapSize="30dp"
+                app:strokeWidth="30dp"
+                app:shadowCapSize="30dp"
+                app:backgroundColor="#00000000"
+                app:progressColor="#33B660"
+                app:primaryCapVisibility="true"
+                app:shadowCapVisibility="true"/>
+
+        <com.mofeejegi.prpgressfancybar.RoundedProgress
+                android:layout_width="300dp"
+                android:layout_height="300dp"
+                android:padding="15dp"
+                app:progress="194"
+                app:max="360"
+                app:primaryCapSize="30dp"
+                app:strokeWidth="30dp"
+                app:shadowCapSize="30dp"
+                app:backgroundColor="#00000000"
+                app:progressColor="#3FE238"
+                app:primaryCapVisibility="true"
+                app:shadowCapVisibility="true"/>
+
+
+        <com.mofeejegi.prpgressfancybar.RoundedProgress
+                android:layout_width="300dp"
+                android:layout_height="300dp"
+                android:padding="15dp"
+                app:progress="151"
+                app:max="360"
+                app:primaryCapSize="30dp"
+                app:strokeWidth="30dp"
+                app:shadowCapSize="30dp"
+                app:backgroundColor="#00000000"
+                app:progressColor="#E4AB36"
+                app:primaryCapVisibility="true"
+                app:shadowCapVisibility="true"/>
+
+
+        <com.mofeejegi.prpgressfancybar.RoundedProgress
+                android:layout_width="300dp"
+                android:layout_height="300dp"
+                android:padding="15dp"
+                app:progress="108"
+                app:max="360"
+                app:primaryCapSize="30dp"
+                app:strokeWidth="30dp"
+                app:shadowCapSize="30dp"
                 app:backgroundColor="#00000000"
                 app:progressColor="#EA6358"
-                app:secondaryProgressColor="#00f"
                 app:primaryCapVisibility="true"
-                app:secondaryCapVisibility="true"/>
+                app:shadowCapVisibility="true"/>
 
         <!--<ProgressBar-->
                 <!--android:layout_width="300dp"-->
@@ -52,15 +110,6 @@
                 <!--android:progressDrawable="@drawable/semi_circle_rotate"-->
                 <!--style="@android:style/Widget.ProgressBar.Horizontal"/>-->
 
-        <!--<ProgressBar-->
-                <!--android:layout_width="300dp"-->
-                <!--android:layout_height="300dp"-->
-                <!--android:progress="241"-->
-                <!--android:max="360"-->
-                <!--android:indeterminate="false"-->
-                <!--android:progressTint="#23000000"-->
-                <!--android:progressDrawable="@drawable/semi_circle_rotate"-->
-                <!--style="@android:style/Widget.ProgressBar.Horizontal"/>-->
 
         <!--<ProgressBar-->
                 <!--android:layout_width="300dp"-->
@@ -72,15 +121,6 @@
                 <!--android:progressDrawable="@drawable/semi_circle_rotate"-->
                 <!--style="@android:style/Widget.ProgressBar.Horizontal"/>-->
 
-        <!--<ProgressBar-->
-                <!--android:layout_width="300dp"-->
-                <!--android:layout_height="300dp"-->
-                <!--android:progress="217"-->
-                <!--android:max="360"-->
-                <!--android:indeterminate="false"-->
-                <!--android:progressTint="#23000000"-->
-                <!--android:progressDrawable="@drawable/semi_circle_rotate"-->
-                <!--style="@android:style/Widget.ProgressBar.Horizontal"/>-->
 
         <!--<ProgressBar-->
                 <!--android:layout_width="300dp"-->
@@ -92,15 +132,6 @@
                 <!--android:progressDrawable="@drawable/semi_circle_rotate"-->
                 <!--style="@android:style/Widget.ProgressBar.Horizontal"/>-->
 
-        <!--<ProgressBar-->
-                <!--android:layout_width="300dp"-->
-                <!--android:layout_height="300dp"-->
-                <!--android:progress="195"-->
-                <!--android:max="360"-->
-                <!--android:indeterminate="false"-->
-                <!--android:progressTint="#23000000"-->
-                <!--android:progressDrawable="@drawable/semi_circle_rotate"-->
-                <!--style="@android:style/Widget.ProgressBar.Horizontal"/>-->
 
         <!--<ProgressBar-->
                 <!--android:layout_width="300dp"-->
@@ -115,16 +146,6 @@
         <!--<ProgressBar-->
                 <!--android:layout_width="300dp"-->
                 <!--android:layout_height="300dp"-->
-                <!--android:progress="152"-->
-                <!--android:max="360"-->
-                <!--android:indeterminate="false"-->
-                <!--android:progressTint="#23000000"-->
-                <!--android:progressDrawable="@drawable/semi_circle_rotate"-->
-                <!--style="@android:style/Widget.ProgressBar.Horizontal"/>-->
-
-        <!--<ProgressBar-->
-                <!--android:layout_width="300dp"-->
-                <!--android:layout_height="300dp"-->
                 <!--android:progress="151"-->
                 <!--android:max="360"-->
                 <!--android:indeterminate="false"-->
@@ -132,15 +153,6 @@
                 <!--android:progressDrawable="@drawable/semi_circle_rotate"-->
                 <!--style="@android:style/Widget.ProgressBar.Horizontal"/>-->
 
-        <!--<ProgressBar-->
-                <!--android:layout_width="300dp"-->
-                <!--android:layout_height="300dp"-->
-                <!--android:progress="109"-->
-                <!--android:max="360"-->
-                <!--android:indeterminate="false"-->
-                <!--android:progressTint="#23000000"-->
-                <!--android:progressDrawable="@drawable/semi_circle_rotate"-->
-                <!--style="@android:style/Widget.ProgressBar.Horizontal"/>-->
 
         <!--<ProgressBar-->
                 <!--android:layout_width="300dp"-->

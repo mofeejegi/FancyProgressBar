@@ -2,13 +2,13 @@
 <resources>
     <declare-styleable name="RoundedProgress">
         <attr name="progress" format="float" />
+        <attr name="max" format="float" />
         <attr name="progressColor" format="color" />
-        <attr name="secondaryProgressColor" format="color" />
         <attr name="backgroundColor" format="color" />
         <attr name="primaryCapSize" format="dimension" />
-        <attr name="secondaryCapSize" format="dimension" />
+        <attr name="shadowCapSize" format="dimension" />
         <attr name="primaryCapVisibility" format="boolean" />
-        <attr name="secondaryCapVisibility" format="boolean" />
+        <attr name="shadowCapVisibility" format="boolean" />
         <attr name="strokeWidth" format="dimension" />
         <attr name="textColor" format="color" />
     </declare-styleable>

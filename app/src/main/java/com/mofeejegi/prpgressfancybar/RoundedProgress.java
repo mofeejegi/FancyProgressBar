@@ -30,6 +30,7 @@ public class RoundedProgress extends View {
 
     private float mProgress;
     private float mShadowProgress;
+    private float mMaxProgress;
 
     private int mTextColor;
 
@@ -78,16 +79,17 @@ public class RoundedProgress extends View {
             mShadowProgressColor = getResources().getColor(android.R.color.black);
 
             mProgress = a.getFloat(R.styleable.RoundedProgress_progress, 0);
-            mShadowProgress = mProgress + (mProgress * 0.0025F);
+            mMaxProgress = a.getFloat(R.styleable.RoundedProgress_max, 100);
+            mShadowProgress = mProgress + (mMaxProgress * 0.0025f);
 
             mStrokeWidth = a.getDimensionPixelSize(R.styleable.RoundedProgress_strokeWidth, 20);
             mTextColor = a.getColor(R.styleable.RoundedProgress_textColor, getResources().getColor(android.R.color.black));
 
             mPrimaryCapSize = a.getDimensionPixelSize(R.styleable.RoundedProgress_primaryCapSize, 20);
-            mShadowCapSize = a.getDimensionPixelSize(R.styleable.RoundedProgress_secondaryCapSize, 20);
+            mShadowCapSize = a.getDimensionPixelSize(R.styleable.RoundedProgress_shadowCapSize, 20);
 
             mIsPrimaryCapVisible = a.getBoolean(R.styleable.RoundedProgress_primaryCapVisibility, true);
-            mIsShadowCapVisible = a.getBoolean(R.styleable.RoundedProgress_secondaryCapVisibility, true);
+            mIsShadowCapVisible = a.getBoolean(R.styleable.RoundedProgress_shadowCapVisibility, true);
 
         } finally {
             a.recycle();
@@ -131,7 +133,7 @@ public class RoundedProgress extends View {
         invalidate();
     }
 
-    int startAngle = 270; //270
+    int startAngle = 140; //270
 
     @Override
     protected void onDraw(Canvas canvas) {
@@ -144,34 +146,36 @@ public class RoundedProgress extends View {
         canvas.drawArc(mRectF, 0, 360, false, mBackgroundPaint);
 
         // for drawing a shadow progress circle
-        float shadowSwipeAngle = ((mShadowProgress * 360) / 100) + (startAngle - 270);
-        canvas.drawArc(mRectF, startAngle, shadowSwipeAngle, false, mShadowPaint);
+        float shadowSweepAngle = ((mShadowProgress * 360) / mMaxProgress);
+        canvas.drawArc(mRectF, startAngle, shadowSweepAngle, false, mShadowPaint);
 
         // for drawing a main progress circle
-        float primarySwipeAngle = ((mProgress * 360) / 100) + (startAngle - 270);
-        canvas.drawArc(mRectF, startAngle, primarySwipeAngle, false, mPrimaryPaint);
+        float primarySweepAngle = ((mProgress * 360) / mMaxProgress);
+        canvas.drawArc(mRectF, startAngle, primarySweepAngle, false, mPrimaryPaint);
 
-        // for cap of shadow progress
+        // for cap of shadow progress,
+        // include start angle in calculation to properly place the cap where the arc ends
         int r = (getHeight() - getPaddingLeft() * 2) / 2;      // Calculated from canvas width
-        double trad = (shadowSwipeAngle - 90) * (Math.PI / 180d); // = 5.1051
+        double trad = (shadowSweepAngle - (360 - startAngle)) * (Math.PI / 180d); // = 5.1051
         int x = (int) (r * Math.cos(trad));
         int y = (int) (r * Math.sin(trad));
         mShadowPaint.setStyle(Paint.Style.FILL);
         if (mIsShadowCapVisible)
-            canvas.drawCircle(x + (mWidth / 2), y + (mHeight / 2), mShadowCapSize /2, mShadowPaint);
+            canvas.drawCircle(x + (mWidth / 2.0f), y + (mHeight / 2.0f), mShadowCapSize /2.0f, mShadowPaint);
 
-        // for cap of primary progress
-        trad = (primarySwipeAngle - 90) * (Math.PI / 180d); // = 5.1051
+        // for cap of primary progress,
+        // include start angle in calculation to properly place the cap where the arc ends
+        trad = (primarySweepAngle - (360 - startAngle)) * (Math.PI / 180d); // = 5.1051
         x = (int) (r * Math.cos(trad));
         y = (int) (r * Math.sin(trad));
         mPrimaryPaint.setStyle(Paint.Style.FILL);
         if (mIsPrimaryCapVisible) {
-            canvas.drawCircle(x + (mWidth / 2), y + (mHeight / 2), mPrimaryCapSize / 2, mPrimaryPaint);
+            canvas.drawCircle(x + (mWidth / 2.0f), y + (mHeight / 2.0f), mPrimaryCapSize / 2.0f, mPrimaryPaint);
 
-            trad = -90 * (Math.PI / 180d);
+            trad = (0 - (360 - startAngle)) * (Math.PI / 180d);
             x = (int) (r * Math.cos(trad));
             y = (int) (r * Math.sin(trad));
-            canvas.drawCircle(x + (mWidth / 2), y + (mHeight / 2), mPrimaryCapSize / 2, mPrimaryPaint);
+            canvas.drawCircle(x + (mWidth / 2.0f), y + (mHeight / 2.0f), mPrimaryCapSize / 2.0f, mPrimaryPaint);
 
         }
 
