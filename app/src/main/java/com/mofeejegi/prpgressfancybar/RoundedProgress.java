@@ -112,7 +112,7 @@ public class RoundedProgress extends View {
         mShadowPaint.setStyle(Paint.Style.STROKE);
         mShadowPaint.setStrokeWidth(mStrokeWidth);
         mShadowPaint.setColor(mShadowProgressColor);
-        mShadowPaint.setShadowLayer(1, 0, 0, mShadowProgressColor);
+        //mShadowPaint.setShadowLayer(1, 0, 0, mShadowProgressColor);
         mShadowPaint.setAlpha(25);
 
         mTextPaint = new TextPaint();
@@ -178,7 +178,6 @@ public class RoundedProgress extends View {
             canvas.drawCircle(x + (mWidth / 2.0f), y + (mHeight / 2.0f), mPrimaryCapSize / 2.0f, mPrimaryPaint);
 
         }
-
 
         if (mDrawText)
             canvas.drawText(mProgress + "%", x, y, mTextPaint);
