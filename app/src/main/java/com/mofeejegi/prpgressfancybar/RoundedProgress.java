@@ -34,7 +34,6 @@ public class RoundedProgress extends View {
 
     private float mUpdatedProgress;
     private float mFinalProgress;
-    private float mMaxProgress;
 
     private float mMin = 300;
     private float mPoorMax = 549 - mMin;
@@ -109,7 +108,6 @@ public class RoundedProgress extends View {
 
             mFinalProgress = max(a.getFloat(R.styleable.RoundedProgress_progress, mMin) - mMin, 0);
             mUpdatedProgress = mFinalProgress; // use for animation purposes
-            mMaxProgress = mExcellentMax;
 
             mStrokeWidth = a.getDimensionPixelSize(R.styleable.RoundedProgress_strokeWidth, 35);
             mTextColor = a.getColor(R.styleable.RoundedProgress_textColor, getResources().getColor(android.R.color.black));
@@ -190,20 +188,20 @@ public class RoundedProgress extends View {
         drawLevelArc(canvas, mBackgroundPaint, mMax, mMaxAngle, false);
 
         // Show shadow in excellent progress bar except when it reaches the end
-        if (mFinalProgress > mVeryGoodMax)
-            drawLevelArc(canvas, mExcellentBarPaint, mExcellentMax, mExcellentMaxAngle, mUpdatedProgress != mMaxProgress);
-
-        if (mFinalProgress > mGoodMax)
-            drawLevelArc(canvas, mVeryGoodBarPaint, mVeryGoodMax, mVeryGoodMaxAngle, true);
-
-        if (mFinalProgress > mFairMax)
-            drawLevelArc(canvas, mGoodBarPaint, mGoodMax, mGoodMaxAngle, true);
-
-        if (mFinalProgress > mPoorMax)
-            drawLevelArc(canvas, mFairBarPaint, mFairMax, mFairMaxAngle, true);
-
-        if (mFinalProgress > 0)
-            drawLevelArc(canvas, mPoorBarPaint, mPoorMax, mPoorMaxAngle, true);
+//        if (mFinalProgress > mVeryGoodMax)
+//            drawLevelArc(canvas, mExcellentBarPaint, mExcellentMax, mExcellentMaxAngle, mUpdatedProgress != mMaxProgress);
+//
+//        if (mFinalProgress > mGoodMax)
+//            drawLevelArc(canvas, mVeryGoodBarPaint, mVeryGoodMax, mVeryGoodMaxAngle, true);
+//
+//        if (mFinalProgress > mFairMax)
+//            drawLevelArc(canvas, mGoodBarPaint, mGoodMax, mGoodMaxAngle, true);
+//
+//        if (mFinalProgress > mPoorMax)
+//            drawLevelArc(canvas, mFairBarPaint, mFairMax, mFairMaxAngle, true);
+//
+//        if (mFinalProgress > 0)
+//            drawLevelArc(canvas, mPoorBarPaint, mPoorMax, mPoorMaxAngle, true);
 
 
         if (mDrawText)
