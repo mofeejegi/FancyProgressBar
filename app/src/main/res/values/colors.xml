@@ -3,4 +3,11 @@
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
+
+    <color name="cibilPoor">#FF7C6D</color>
+    <color name="cibilFair">#F5BE43</color>
+    <color name="cibilGood">#47EB47</color>
+    <color name="cibilVeryGood">#0AC775</color>
+    <color name="cibilExcellent">#0F5651</color>
+    <color name="cibilBackground">#D7D7D7</color>
 </resources>

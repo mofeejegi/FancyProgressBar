@@ -2,6 +2,7 @@ package com.mofeejegi.prpgressfancybar;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.RectF;
@@ -9,36 +10,52 @@ import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.view.View;
 
+import static java.lang.Math.max;
+
 /**
  * Created by mofeejegi on 2020-02-16.
  */
 public class RoundedProgress extends View {
 
-    private Paint mPrimaryPaint;
     private Paint mShadowPaint;
+    private Paint mPoorBarPaint;
+    private Paint mFairBarPaint;
+    private Paint mGoodBarPaint;
+    private Paint mVeryGoodBarPaint;
+    private Paint mExcellentBarPaint;
+    private Paint mBackgroundPaint;
+
     private RectF mRectF;
     private TextPaint mTextPaint;
-    private Paint mBackgroundPaint;
 
     private boolean mDrawText = false;
 
-    private int mShadowProgressColor;
-    private int mPrimaryProgressColor;
-    private int mBackgroundColor;
-
     private int mStrokeWidth;
 
-    private float mProgress;
-    private float mShadowProgress;
+    private float mUpdatedProgress;
+    private float mFinalProgress;
     private float mMaxProgress;
+
+    private float mMin = 300;
+    private float mPoorMax = 549 - mMin;
+    private float mFairMax = 649 - mMin;
+    private float mGoodMax = 749 - mMin;
+    private float mVeryGoodMax = 799 - mMin;
+    private float mExcellentMax = 900 - mMin;
+    private float mMax = mExcellentMax;
+
+    private int mPoorMaxAngle = 70; //+0 (@startAngle = 140 deg from top)
+    private int mFairMaxAngle = 125; //+55
+    private int mGoodMaxAngle = 175; //+50
+    private int mVeryGoodMaxAngle = 215; //+40
+    private int mExcellentMaxAngle = 260; //+45
+    private int mMaxAngle = mExcellentMaxAngle;
+
 
     private int mTextColor;
 
     private int mPrimaryCapSize;
     private int mShadowCapSize;
-
-    private boolean mIsPrimaryCapVisible;
-    private boolean mIsShadowCapVisible;
 
     private int x;
     private int y;
@@ -71,25 +88,34 @@ public class RoundedProgress extends View {
             throw new IllegalArgumentException("Must have to pass the attributes");
         }
 
+        int mPoorProgressColor;
+        int mFairProgressColor;
+        int mGoodProgressColor;
+        int mVeryGoodProgressColor;
+        int mExcellentProgressColor;
+        int mBackgroundColor;
+        int mShadowColor;
+
         try {
             //mDrawText = a.getBoolean(R.styleable.RoundedProgress_showProgressText, false);
 
-            mBackgroundColor = a.getColor(R.styleable.RoundedProgress_backgroundColor, getResources().getColor(android.R.color.darker_gray));
-            mPrimaryProgressColor = a.getColor(R.styleable.RoundedProgress_progressColor, getResources().getColor(android.R.color.darker_gray));
-            mShadowProgressColor = getResources().getColor(android.R.color.black);
+            mBackgroundColor = getResources().getColor(R.color.cibilBackground);
+            mPoorProgressColor = getResources().getColor(R.color.cibilPoor);
+            mFairProgressColor = getResources().getColor(R.color.cibilFair);
+            mGoodProgressColor = getResources().getColor(R.color.cibilGood);
+            mVeryGoodProgressColor = getResources().getColor(R.color.cibilVeryGood);
+            mExcellentProgressColor = getResources().getColor(R.color.cibilExcellent);
+            mShadowColor = getResources().getColor(android.R.color.black);
 
-            mProgress = a.getFloat(R.styleable.RoundedProgress_progress, 0);
-            mMaxProgress = a.getFloat(R.styleable.RoundedProgress_max, 100);
-            mShadowProgress = mProgress + (mMaxProgress * 0.0025f);
+            mFinalProgress = max(a.getFloat(R.styleable.RoundedProgress_progress, mMin) - mMin, 0);
+            mUpdatedProgress = mFinalProgress; // use for animation purposes
+            mMaxProgress = mExcellentMax;
 
-            mStrokeWidth = a.getDimensionPixelSize(R.styleable.RoundedProgress_strokeWidth, 20);
+            mStrokeWidth = a.getDimensionPixelSize(R.styleable.RoundedProgress_strokeWidth, 35);
             mTextColor = a.getColor(R.styleable.RoundedProgress_textColor, getResources().getColor(android.R.color.black));
 
-            mPrimaryCapSize = a.getDimensionPixelSize(R.styleable.RoundedProgress_primaryCapSize, 20);
+            mPrimaryCapSize = a.getDimensionPixelSize(R.styleable.RoundedProgress_primaryCapSize, 35);
             mShadowCapSize = a.getDimensionPixelSize(R.styleable.RoundedProgress_shadowCapSize, 20);
-
-            mIsPrimaryCapVisible = a.getBoolean(R.styleable.RoundedProgress_primaryCapVisibility, true);
-            mIsShadowCapVisible = a.getBoolean(R.styleable.RoundedProgress_shadowCapVisibility, true);
 
         } finally {
             a.recycle();
@@ -101,19 +127,41 @@ public class RoundedProgress extends View {
         mBackgroundPaint.setStrokeWidth(mStrokeWidth);
         mBackgroundPaint.setColor(mBackgroundColor);
 
-        mPrimaryPaint = new Paint();
-        mPrimaryPaint.setAntiAlias(true);
-        mPrimaryPaint.setStyle(Paint.Style.STROKE);
-        mPrimaryPaint.setStrokeWidth(mStrokeWidth);
-        mPrimaryPaint.setColor(mPrimaryProgressColor);
+        mPoorBarPaint = new Paint();
+        mPoorBarPaint.setAntiAlias(true);
+        mPoorBarPaint.setStyle(Paint.Style.STROKE);
+        mPoorBarPaint.setStrokeWidth(mStrokeWidth);
+        mPoorBarPaint.setColor(mPoorProgressColor);
 
-        mShadowPaint = new Paint();
+        mFairBarPaint = new Paint();
+        mFairBarPaint.setAntiAlias(true);
+        mFairBarPaint.setStyle(Paint.Style.STROKE);
+        mFairBarPaint.setStrokeWidth(mStrokeWidth);
+        mFairBarPaint.setColor(mFairProgressColor);
+
+        mGoodBarPaint = new Paint();
+        mGoodBarPaint.setAntiAlias(true);
+        mGoodBarPaint.setStyle(Paint.Style.STROKE);
+        mGoodBarPaint.setStrokeWidth(mStrokeWidth);
+        mGoodBarPaint.setColor(mGoodProgressColor);
+
+        mVeryGoodBarPaint = new Paint();
+        mVeryGoodBarPaint.setAntiAlias(true);
+        mVeryGoodBarPaint.setStyle(Paint.Style.STROKE);
+        mVeryGoodBarPaint.setStrokeWidth(mStrokeWidth);
+        mVeryGoodBarPaint.setColor(mVeryGoodProgressColor);
+
+        mExcellentBarPaint = new Paint();
+        mExcellentBarPaint.setAntiAlias(true);
+        mExcellentBarPaint.setStyle(Paint.Style.STROKE);
+        mExcellentBarPaint.setStrokeWidth(mStrokeWidth);
+        mExcellentBarPaint.setColor(mExcellentProgressColor);
+
+        mShadowPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
+        mShadowPaint.setMaskFilter(new BlurMaskFilter(20f, BlurMaskFilter.Blur.NORMAL));
         mShadowPaint.setAntiAlias(true);
-        mShadowPaint.setStyle(Paint.Style.STROKE);
-        mShadowPaint.setStrokeWidth(mStrokeWidth);
-        mShadowPaint.setColor(mShadowProgressColor);
-        //mShadowPaint.setShadowLayer(1, 0, 0, mShadowProgressColor);
-        mShadowPaint.setAlpha(25);
+        mShadowPaint.setStyle(Paint.Style.FILL);
+        mShadowPaint.setColor(mShadowColor);
 
         mTextPaint = new TextPaint();
         mTextPaint.setColor(mTextColor);
@@ -126,7 +174,7 @@ public class RoundedProgress extends View {
         super.onSizeChanged(w, h, oldw, oldh);
         mRectF.set(getPaddingLeft(), getPaddingTop(), w - getPaddingRight(), h - getPaddingBottom());
         mTextPaint.setTextSize(w / 5);
-        x = (w / 2) - ((int) (mTextPaint.measureText(mProgress + "%") / 2));
+        x = (w / 2) - ((int) (mTextPaint.measureText(mUpdatedProgress + "%") / 2));
         y = (int) ((h / 2) - ((mTextPaint.descent() + mTextPaint.ascent()) / 2));
         mWidth = w;
         mHeight = h;
@@ -139,48 +187,76 @@ public class RoundedProgress extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        mPrimaryPaint.setStyle(Paint.Style.STROKE);
-        mShadowPaint.setStyle(Paint.Style.STROKE);
+        drawLevelArc(canvas, mBackgroundPaint, mMax, mMaxAngle, false);
 
-        // for drawing a full progress .. The background circle
-        canvas.drawArc(mRectF, 0, 360, false, mBackgroundPaint);
+        // Show shadow in excellent progress bar except when it reaches the end
+        if (mFinalProgress > mVeryGoodMax)
+            drawLevelArc(canvas, mExcellentBarPaint, mExcellentMax, mExcellentMaxAngle, mUpdatedProgress != mMaxProgress);
 
-        // for drawing a shadow progress circle
-        float shadowSweepAngle = ((mShadowProgress * 360) / mMaxProgress);
-        canvas.drawArc(mRectF, startAngle, shadowSweepAngle, false, mShadowPaint);
+        if (mFinalProgress > mGoodMax)
+            drawLevelArc(canvas, mVeryGoodBarPaint, mVeryGoodMax, mVeryGoodMaxAngle, true);
 
-        // for drawing a main progress circle
-        float primarySweepAngle = ((mProgress * 360) / mMaxProgress);
-        canvas.drawArc(mRectF, startAngle, primarySweepAngle, false, mPrimaryPaint);
+        if (mFinalProgress > mFairMax)
+            drawLevelArc(canvas, mGoodBarPaint, mGoodMax, mGoodMaxAngle, true);
 
-        // for cap of shadow progress,
-        // include start angle in calculation to properly place the cap where the arc ends
-        int r = (getHeight() - getPaddingLeft() * 2) / 2;      // Calculated from canvas width
-        double trad = (shadowSweepAngle - (360 - startAngle)) * (Math.PI / 180d); // = 5.1051
-        int x = (int) (r * Math.cos(trad));
-        int y = (int) (r * Math.sin(trad));
-        mShadowPaint.setStyle(Paint.Style.FILL);
-        if (mIsShadowCapVisible)
-            canvas.drawCircle(x + (mWidth / 2.0f), y + (mHeight / 2.0f), mShadowCapSize /2.0f, mShadowPaint);
+        if (mFinalProgress > mPoorMax)
+            drawLevelArc(canvas, mFairBarPaint, mFairMax, mFairMaxAngle, true);
+
+        if (mFinalProgress > 0)
+            drawLevelArc(canvas, mPoorBarPaint, mPoorMax, mPoorMaxAngle, true);
+
+
+        if (mDrawText)
+            canvas.drawText(mUpdatedProgress+"", x, y, mTextPaint);
+    }
+
+    private void drawLevelArc(Canvas canvas, Paint progressBarPaint, float maxSectionProgress, float maxAngle, boolean shouldShowShadow) {
+        int r = (getHeight() - getPaddingLeft() * 2) / 2; // Calculated from canvas width
+        int x, y;
+        double trad;
+        float updatedProgress;
+
+        // Interpolate for animation purposes
+        if (maxSectionProgress < mFinalProgress)
+            updatedProgress = maxSectionProgress * (mUpdatedProgress/mFinalProgress);
+        else
+            updatedProgress = mUpdatedProgress;
+
+        if (shouldShowShadow) {
+            float shadowSweepAngle = ((updatedProgress * maxAngle) / (maxSectionProgress)) + 2f;
+
+            // for cap of shadow progress,
+            // include start angle in calculation to properly place the cap where the arc ends
+            // Draw shadow cap at end
+            trad = (shadowSweepAngle - (360 - startAngle)) * (Math.PI / 180d); // = 5.1051
+            x = (int) (r * Math.cos(trad));
+            y = (int) (r * Math.sin(trad));
+            canvas.drawCircle(x + (mWidth / 2.0f), y + (mHeight / 2.0f), mShadowCapSize / 2.0f, mShadowPaint);
+
+        } else {
+            // Background view or completed excellent progress should always draw the complete arc
+            updatedProgress = maxSectionProgress;
+        }
+
+
+        float progressSweepAngle = ((updatedProgress * maxAngle) / (maxSectionProgress));
+        canvas.drawArc(mRectF, startAngle, progressSweepAngle, false, progressBarPaint);
 
         // for cap of primary progress,
         // include start angle in calculation to properly place the cap where the arc ends
-        trad = (primarySweepAngle - (360 - startAngle)) * (Math.PI / 180d); // = 5.1051
+        // Draw cap at end
+        trad = (progressSweepAngle - (360 - startAngle)) * (Math.PI / 180d); // = 5.1051
         x = (int) (r * Math.cos(trad));
         y = (int) (r * Math.sin(trad));
-        mPrimaryPaint.setStyle(Paint.Style.FILL);
-        if (mIsPrimaryCapVisible) {
-            canvas.drawCircle(x + (mWidth / 2.0f), y + (mHeight / 2.0f), mPrimaryCapSize / 2.0f, mPrimaryPaint);
+        progressBarPaint.setStyle(Paint.Style.FILL);
+        canvas.drawCircle(x + (mWidth / 2.0f), y + (mHeight / 2.0f), mPrimaryCapSize / 2.0f, progressBarPaint);
 
-            trad = (0 - (360 - startAngle)) * (Math.PI / 180d);
-            x = (int) (r * Math.cos(trad));
-            y = (int) (r * Math.sin(trad));
-            canvas.drawCircle(x + (mWidth / 2.0f), y + (mHeight / 2.0f), mPrimaryCapSize / 2.0f, mPrimaryPaint);
+        // Draw cap at start
+        trad = (0 - (360 - startAngle)) * (Math.PI / 180d);
+        x = (int) (r * Math.cos(trad));
+        y = (int) (r * Math.sin(trad));
+        canvas.drawCircle(x + (mWidth / 2.0f), y + (mHeight / 2.0f), mPrimaryCapSize / 2.0f, progressBarPaint);
 
-        }
-
-        if (mDrawText)
-            canvas.drawText(mProgress + "%", x, y, mTextPaint);
     }
 
 //    public void setDrawText(boolean mDrawText) {
@@ -198,8 +274,8 @@ public class RoundedProgress extends View {
 //        invalidate();
 //    }
 //
-//    public void setPrimaryProgressColor(int mPrimaryProgressColor) {
-//        this.mPrimaryProgressColor = mPrimaryProgressColor;
+//    public void setPrimaryProgressColor(int mPoorProgressColor) {
+//        this.mPoorProgressColor = mPoorProgressColor;
 //        invalidate();
 //    }
 //
@@ -208,8 +284,8 @@ public class RoundedProgress extends View {
 //        invalidate();
 //    }
 //
-//    public void setProgress(int mProgress) {
-//        this.mProgress = mProgress;
+//    public void setProgress(int mUpdatedProgress) {
+//        this.mUpdatedProgress = mUpdatedProgress;
 //        invalidate();
 //    }
 //
@@ -255,11 +331,11 @@ public class RoundedProgress extends View {
 //    }
 //
 //    public int getPrimaryProgressColor() {
-//        return mPrimaryProgressColor;
+//        return mPoorProgressColor;
 //    }
 //
 //    public int getProgress() {
-//        return mProgress;
+//        return mUpdatedProgress;
 //    }
 //
 //    public int getBackgroundColor() {
