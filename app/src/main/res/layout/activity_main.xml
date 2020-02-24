@@ -15,17 +15,18 @@
          android:layout_marginBottom="8dp" app:layout_constraintBottom_toBottomOf="parent">
 
         <com.mofeejegi.prpgressfancybar.RoundedProgress
+            android:id="@+id/progress"
                 android:layout_width="300dp"
                 android:layout_height="300dp"
                 android:padding="20dp"
-                app:progress="860"
+                app:progress="900"
+                app:shouldAnimate="true"
                 app:primaryCapSize="35dp"
                 app:strokeWidth="35dp"
-                app:shadowCapSize="20dp"/>
+                app:shadowCapSize="20dp"
+            android:clickable="true"/>
 
     </FrameLayout>
-
-
 
 
 

@@ -1,5 +1,6 @@
 package com.mofeejegi.prpgressfancybar;
 
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.BlurMaskFilter;
@@ -9,13 +10,25 @@ import android.graphics.RectF;
 import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.BounceInterpolator;
+import android.view.animation.DecelerateInterpolator;
 
 import static java.lang.Math.max;
+import static java.lang.Math.min;
 
 /**
  * Created by mofeejegi on 2020-02-16.
  */
 public class RoundedProgress extends View {
+
+    // TODO ANIMATION ONLY FORWARD, PUT CHECK FOR UPDATED > FINAL AT START TO NAVIGATE BACKWARDS
+
+    public static int MODE_ANIMATED = 0;
+    public static int MODE_STATIC = 1;
+
+    private int mode = MODE_ANIMATED;
 
     private Paint mShadowPaint;
     private Paint progressBarPaint;
@@ -35,7 +48,8 @@ public class RoundedProgress extends View {
 
     private int mStrokeWidth;
 
-    private float mUpdatedProgress;
+    private int mUpdatedAlpha; // used for animation purposes
+    private float mUpdatedProgress; // used for animation purposes
     private float mFinalProgress;
 
     private float mMin = 300;
@@ -104,8 +118,11 @@ public class RoundedProgress extends View {
             mExcellentProgressColor = getResources().getColor(R.color.cibilExcellent);
             mShadowColor = getResources().getColor(android.R.color.black);
 
+            mode = a.getBoolean(R.styleable.RoundedProgress_shouldAnimate, true) ? MODE_ANIMATED : MODE_STATIC;
+
             mFinalProgress = max(a.getFloat(R.styleable.RoundedProgress_progress, mMin) - mMin, 0);
-            mUpdatedProgress = mFinalProgress; // use for animation purposes
+            if (mode == MODE_STATIC)
+                mUpdatedProgress = mFinalProgress;
 
             mStrokeWidth = a.getDimensionPixelSize(R.styleable.RoundedProgress_strokeWidth, 35);
             mTextColor = a.getColor(R.styleable.RoundedProgress_textColor, getResources().getColor(android.R.color.black));
@@ -155,21 +172,25 @@ public class RoundedProgress extends View {
 
         drawLevelArc(canvas, mBackgroundColor, mMax, mMaxAngle, false);
 
-        // Show shadow in excellent progress bar except when it reaches the end
-        if (mFinalProgress > mVeryGoodMax)
-            drawLevelArc(canvas, mExcellentProgressColor, mExcellentMax, mExcellentMaxAngle, mUpdatedProgress != mMax);
+        if (mUpdatedProgress > 0) {
 
-        if (mFinalProgress > mGoodMax)
-            drawLevelArc(canvas, mVeryGoodProgressColor, mVeryGoodMax, mVeryGoodMaxAngle, true);
+            // Show shadow in excellent progress bar except when it reaches the end
+            if (mFinalProgress > mVeryGoodMax)
+                drawLevelArc(canvas, mExcellentProgressColor, mExcellentMax, mExcellentMaxAngle, mUpdatedProgress != mMax);
 
-        if (mFinalProgress > mFairMax)
-            drawLevelArc(canvas, mGoodProgressColor, mGoodMax, mGoodMaxAngle, true);
+            if (mFinalProgress > mGoodMax)
+                drawLevelArc(canvas, mVeryGoodProgressColor, mVeryGoodMax, mVeryGoodMaxAngle, true);
 
-        if (mFinalProgress > mPoorMax)
-            drawLevelArc(canvas, mFairProgressColor, mFairMax, mFairMaxAngle, true);
+            if (mFinalProgress > mFairMax)
+                drawLevelArc(canvas, mGoodProgressColor, mGoodMax, mGoodMaxAngle, true);
 
-        if (mFinalProgress > 0)
-            drawLevelArc(canvas, mPoorProgressColor, mPoorMax, mPoorMaxAngle, true);
+            if (mFinalProgress > mPoorMax)
+                drawLevelArc(canvas, mFairProgressColor, mFairMax, mFairMaxAngle, true);
+
+            if (mFinalProgress > 0)
+                drawLevelArc(canvas, mPoorProgressColor, mPoorMax, mPoorMaxAngle, true);
+
+        }
 
 
         if (mDrawText)
@@ -207,7 +228,6 @@ public class RoundedProgress extends View {
             updatedProgress = maxSectionProgress;
         }
 
-
         float progressSweepAngle = ((updatedProgress * maxAngle) / (maxSectionProgress));
         canvas.drawArc(mRectF, startAngle, progressSweepAngle, false, progressBarPaint);
 
@@ -228,98 +248,41 @@ public class RoundedProgress extends View {
 
     }
 
-//    public void setDrawText(boolean mDrawText) {
-//        this.mDrawText = mDrawText;
-//        invalidate();
-//    }
-//
-//    public void setBackgroundColor(int mBackgroundColor) {
-//        this.mBackgroundColor = mBackgroundColor;
-//        invalidate();
-//    }
-//
-//    public void setSecondaryProgressColor(int mSecondaryProgressColor) {
-//        this.mShadowProgressColor = mSecondaryProgressColor;
-//        invalidate();
-//    }
-//
-//    public void setPrimaryProgressColor(int mPoorProgressColor) {
-//        this.mPoorProgressColor = mPoorProgressColor;
-//        invalidate();
-//    }
-//
-//    public void setStrokeWidth(int mStrokeWidth) {
-//        this.mStrokeWidth = mStrokeWidth;
-//        invalidate();
-//    }
-//
-//    public void setProgress(int mUpdatedProgress) {
-//        this.mUpdatedProgress = mUpdatedProgress;
-//        invalidate();
-//    }
-//
-//    public void setSecondaryProgress(int mSecondaryProgress) {
-//        this.mShadowProgress = mSecondaryProgress;
-//        invalidate();
-//    }
-//
-//    public void setTextColor(int mTextColor) {
-//        this.mTextColor = mTextColor;
-//        invalidate();
-//    }
-//
-//    public void setPrimaryCapSize(int mPrimaryCapSize) {
-//        this.mPrimaryCapSize = mPrimaryCapSize;
-//        invalidate();
-//    }
-//
-//    public void setSecondaryCapSize(int mSecondaryCapSize) {
-//        this.mShadowCapSize = mSecondaryCapSize;
-//        invalidate();
-//    }
-//
-//    public boolean isPrimaryCapVisible() {
-//        return mIsPrimaryCapVisible;
-//    }
-//
-//    public void setIsPrimaryCapVisible(boolean mIsPrimaryCapVisible) {
-//        this.mIsPrimaryCapVisible = mIsPrimaryCapVisible;
-//    }
-//
-//    public boolean isSecondaryCapVisible() {
-//        return mIsShadowCapVisible;
-//    }
-//
-//    public void setIsSecondaryCapVisible(boolean mIsSecondaryCapVisible) {
-//        this.mIsShadowCapVisible = mIsSecondaryCapVisible;
-//    }
-//
-//
-//    public int getSecondaryProgressColor() {
-//        return mShadowProgressColor;
-//    }
-//
-//    public int getPrimaryProgressColor() {
-//        return mPoorProgressColor;
-//    }
-//
-//    public int getProgress() {
-//        return mUpdatedProgress;
-//    }
-//
-//    public int getBackgroundColor() {
-//        return mBackgroundColor;
-//    }
-//
-//    public int getSecodaryProgress() {
-//        return mShadowProgress;
-//    }
-//
-//    public int getPrimaryCapSize() {
-//        return mPrimaryCapSize;
-//    }
-//
-//    public int getSecondaryCapSize() {
-//        return mShadowCapSize;
-//    }
+    public void animateProgress(float startProgress) {
+        if (mode == MODE_STATIC) return;
+
+        // Make range 0 - 600
+        startProgress = max(startProgress - 300, 0);
+        startProgress = min(startProgress, 600);
+
+        this.mUpdatedProgress = startProgress;
+
+        ObjectAnimator progressAnimator;
+        progressAnimator = ObjectAnimator.ofFloat(this, "updatedProgress", startProgress, mFinalProgress);
+        progressAnimator.setDuration(1500);
+        //progressAnimator.setInterpolator(new DecelerateInterpolator());
+        progressAnimator.start();
+    }
+
+    public int getMode() {
+        return mode;
+    }
+
+    public void setMode(int mode) {
+        this.mode = mode;
+            if (mode == MODE_ANIMATED) {
+            setUpdatedProgress(0);
+        } else {
+            setUpdatedProgress(mFinalProgress);
+        }
+    }
+
+    public void setUpdatedProgress(float updatedProgress) {
+        this.mUpdatedProgress = updatedProgress;
+        invalidate();
+    }
+
+    public float getUpdatedProgress() {
+        return mUpdatedProgress;
+    }
 }
