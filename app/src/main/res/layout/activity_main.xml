@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<RelativeLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -7,7 +7,10 @@
         android:layout_height="match_parent"
         tools:context=".MainActivity">
 
-    <FrameLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
+    <FrameLayout
+        android:id="@+id/frame"
+        android:layout_width="wrap_content" android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
 
          app:layout_constraintStart_toStartOf="parent" android:layout_marginLeft="8dp"
          android:layout_marginStart="8dp" app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="8dp"
@@ -24,10 +27,40 @@
                 app:primaryCapSize="35dp"
                 app:strokeWidth="35dp"
                 app:shadowCapSize="20dp"
-            android:clickable="true"/>
+                android:clickable="true"/>
+
+        <TableRow
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="20dp">
+
+            <com.mofeejegi.prpgressfancybar.DigitTextView
+                android:id="@+id/digitText1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="2dp"/>
+
+            <com.mofeejegi.prpgressfancybar.DigitTextView
+                android:id="@+id/digitText2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="2dp" />
+
+            <com.mofeejegi.prpgressfancybar.DigitTextView
+                android:id="@+id/digitText3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="2dp" />
+
+        </TableRow>
 
     </FrameLayout>
 
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+
+</RelativeLayout>

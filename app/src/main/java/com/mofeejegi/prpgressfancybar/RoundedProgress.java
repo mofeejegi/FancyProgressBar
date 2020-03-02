@@ -285,4 +285,13 @@ public class RoundedProgress extends View {
     public float getUpdatedProgress() {
         return mUpdatedProgress;
     }
+
+    public void setProgress(float finalProgress) {
+        this.mFinalProgress = finalProgress - mMin;
+        invalidate();
+    }
+
+    public float getProgress() {
+        return mFinalProgress;
+    }
 }
